@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/business', [BusinessController::class, 'getAllBusinesses']);
+Route::get('/topic-byUrl', [TopicController::class,'getTopicsByUrlHiw']);
+Route::get('/topic-byUrl-video', [TopicController::class,'getTopicsByUrlVideos']);
