@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TopicController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +24,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/business', [BusinessController::class, 'getAllBusinesses']);
 Route::get('/topic-byUrl', [TopicController::class,'getTopicsByUrlHiw']);
 Route::get('/topic-byUrl-video', [TopicController::class,'getTopicsByUrlVideos']);
+Route::get('/item-byId', [ItemController::class,'getItemById']);
+Route::get('/unseen-message', [MessageController::class,'getMessageUnseen']);
+Route::post('/update-message-seen', [MessageController::class,'updateMessageSeen']);
+
+// Route::post('/item-byId', [ItemController::class,'getItemById']);
