@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\Countrie;
 use App\Models\Front_user;
+use App\Models\Frontuser_dealreview;
 use Exception;
 use Illuminate\Http\Request;
 
