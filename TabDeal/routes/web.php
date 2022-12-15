@@ -39,4 +39,3 @@ Route::controller(MessageController::class)->group( function(){
 });
 
 
-
