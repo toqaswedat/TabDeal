@@ -1,8 +1,12 @@
 <?php
 
-use App\Http\Controllers\CitieController;
+use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TopicController;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +19,23 @@ use App\Http\Controllers\Controller;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/business', [BusinessController::class, 'getAllBusinesses']);
+Route::get('/item-byId', [ItemController::class,'getItemById']);
+Route::get('/update-notification-seen', [NotificationController::class, 'updateNotificationSeen']);
+
+
+
+Route::controller(TopicController::class)->group( function(){
+    Route::get('/topic-byUrl', 'getTopicsByUrlHiw');
+    Route::get('/topic-byUrl-video', 'getTopicsByUrlVideos'); 
 });
-// Route::get('/allUsers', [Controller::class, 'allUsers'])->name('allUsers');
+Route::controller(MessageController::class)->group( function(){ 
+    Route::get('/unseen-message', 'getMessageUnseen');
+    Route::get('/update-message-seen', 'updateMessage');
+});
 
 
