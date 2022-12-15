@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Exception;
+use App\Http\Controllers\Post;
+
 
 class MessageController extends Controller
 {
@@ -30,6 +32,23 @@ class MessageController extends Controller
             return $ex->getMessage();
         }
     }
-    
-    
+
+    public function updateMessage(Request $request)
+    {
+        try {
+            $messages = Message::where('chatroom_id', $request->chat_id)->update(['is_read' => 1]);
+            if ($messages) {
+                return response()->json([
+                    'result' => true
+                ]);
+            } else {
+                return response()->json([
+                    'result' => false
+                ]);
+            }
+            // return Message::where('chatroom_id', $request->chatroom_id)->get();
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
 }

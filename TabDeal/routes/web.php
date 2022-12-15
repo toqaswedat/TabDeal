@@ -3,7 +3,9 @@
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TopicController;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,10 +24,19 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/business', [BusinessController::class, 'getAllBusinesses']);
-Route::get('/topic-byUrl', [TopicController::class,'getTopicsByUrlHiw']);
-Route::get('/topic-byUrl-video', [TopicController::class,'getTopicsByUrlVideos']);
 Route::get('/item-byId', [ItemController::class,'getItemById']);
-Route::get('/unseen-message', [MessageController::class,'getMessageUnseen']);
-Route::post('/update-message-seen', [MessageController::class,'updateMessageSeen']);
+Route::get('/update-notification-seen', [NotificationController::class, 'updateNotificationSeen']);
 
-// Route::post('/item-byId', [ItemController::class,'getItemById']);
+
+
+Route::controller(TopicController::class)->group( function(){
+    Route::get('/topic-byUrl', 'getTopicsByUrlHiw');
+    Route::get('/topic-byUrl-video', 'getTopicsByUrlVideos'); 
+});
+Route::controller(MessageController::class)->group( function(){ 
+    Route::get('/unseen-message', 'getMessageUnseen');
+    Route::get('/update-message-seen', 'updateMessage');
+});
+
+
+
