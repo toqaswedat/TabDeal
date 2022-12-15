@@ -33,6 +33,10 @@ Route::post('/deals_num', [UserController::class, 'deals_number']);
 Route::post('/ledger', [UserController::class, 'ledger']);
 Route::post('/get_favourite', [UserController::class, 'get_favourite']);
 Route::get('/get_item_reviews', [UserController::class, 'get_item_reviews']);
+Route::get('/get_item_deals', [UserController::class, 'get_item_deals']);
+Route::post('/add_credits', [UserController::class, 'add_credits']);
+Route::post('/automatch', [UserController::class, 'automatch']);
+
 Route::delete('/rem_favourite/{user_id}/{item_id}', [UserController::class, 'rem_favourite']);
 
 
