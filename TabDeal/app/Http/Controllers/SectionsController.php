@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Deal;
 use App\Models\Item;
+use App\Models\Item_report;
 use App\Models\Section;
 use App\Models\Topic_categorie;
 use App\Models\Topics;
@@ -68,5 +69,7 @@ class SectionsController extends Controller
             return $ex->getMessage();
         }  
     }
+
+
 
 }
