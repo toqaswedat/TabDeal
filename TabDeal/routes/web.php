@@ -24,18 +24,19 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/business', [BusinessController::class, 'getAllBusinesses']);
-Route::get('/item-byId', [ItemController::class,'getItemById']);
-Route::get('/update-notification-seen', [NotificationController::class, 'updateNotificationSeen']);
+Route::get('/item-byId', [ItemController::class, 'getItemById']);
 
 
-
-Route::controller(TopicController::class)->group( function(){
+Route::controller(TopicController::class)->group(function () {
     Route::get('/topic-byUrl', 'getTopicsByUrlHiw');
-    Route::get('/topic-byUrl-video', 'getTopicsByUrlVideos'); 
+    Route::get('/topic-byUrl-video', 'getTopicsByUrlVideos');
+    Route::get('/topic-byFaq-data', 'getTopicsByFaq');
 });
-Route::controller(MessageController::class)->group( function(){ 
+Route::controller(MessageController::class)->group(function () {
     Route::get('/unseen-message', 'getMessageUnseen');
     Route::get('/update-message-seen', 'updateMessage');
 });
-
-
+Route::controller(NotificationController::class)->group(function () {
+    Route::get('/update-notification-seen', 'updateNotificationSeen');
+    Route::get('/unseen-notification', 'getUnseenNotification');
+});
