@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -21,23 +22,35 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/getCitie', [CityController::class, 'get_cities']);
-
-Route::post('/getuserCity', [CityController::class, 'get_userCity']);
-
-Route::get('/getCategories', [SectionsController::class, 'get_categories']);
-Route::get('/categories_offers', [SectionsController::class, 'categories_offers']);
-Route::get('/offers_num', [SectionsController::class, 'offers_num']);
-
-Route::post('/deals_num', [UserController::class, 'deals_number']);
-Route::post('/ledger', [UserController::class, 'ledger']);
-Route::post('/get_favourite', [UserController::class, 'get_favourite']);
-Route::get('/get_item_reviews', [UserController::class, 'get_item_reviews']);
-Route::get('/get_item_deals', [UserController::class, 'get_item_deals']);
-Route::post('/add_credits', [UserController::class, 'add_credits']);
-Route::post('/automatch', [UserController::class, 'automatch']);
-
-Route::delete('/rem_favourite/{user_id}/{item_id}', [UserController::class, 'rem_favourite']);
 
 
-Route::post('/login', [UserController::class, 'login']);
+Route::controller(CityController::class)->group(function () {
+    Route::post('/getuserCity', 'get_userCity');
+    Route::get('/getCitie', 'getCitie');
+});
+Route::controller(ItemController::class)->group(function () {
+    Route::get('/get_single_post', 'get_single_post');
+    Route::get('/get_user_fav_items', 'get_user_fav_items');
+
+});
+
+
+Route::controller(SectionsController::class)->group(function () {
+    Route::get('/getCategories', 'get_categories');
+    Route::get('/categories_offers', 'categories_offers');
+    Route::get('/offers_num', 'offers_num');
+});
+
+
+Route::controller(UserController::class)->group(function () {
+    Route::post('/deals_num', 'deals_number');
+    Route::post('/get_favourite', 'get_favourite');
+    Route::get('/get_item_reviews', 'get_item_reviews');
+    Route::get('/get_item_deals', 'get_item_deals');
+    Route::post('/add_credits', 'add_credits');
+    Route::post('/automatch', 'automatch');
+    Route::post('/deals_num', 'deals_number');
+    Route::delete('/rem_favourite/{user_id}/{item_id}', 'rem_favourite');
+});
+
+
