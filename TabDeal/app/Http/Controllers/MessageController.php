@@ -46,7 +46,6 @@ class MessageController extends Controller
                     'result' => false
                 ]);
             }
-            // return Message::where('chatroom_id', $request->chatroom_id)->get();
         } catch (Exception $ex) {
             return $ex->getMessage();
         }

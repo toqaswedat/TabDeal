@@ -18,14 +18,15 @@ class NotificationController extends Controller
     {
         //
     }
-    public function updateNotificationSeen(Request $request){
+    public function updateNotificationSeen(Request $request)
+    {
         try {
-            $Notifications= Notification::where('user_id', $request->user_id)->update(['seen' => 1]);
-            if($Notifications){
+            $Notifications = Notification::where('user_id', $request->user_id)->update(['seen' => 1]);
+            if ($Notifications) {
                 return response()->json([
                     'result' => true
                 ]);
-            }else{
+            } else {
                 return response()->json([
                     'result' => false
                 ]);
@@ -33,7 +34,22 @@ class NotificationController extends Controller
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
-
-
+    }
+    public function getUnseenNotification(Request $request)
+    {
+        try {
+            $Notifications = Notification::where('user_id', $request->user_id)->where('seen', 0)->get();
+            if (count($Notifications) > 0) {
+                return response()->json([
+                    'result' => true
+                ]);
+            } else {
+                return response()->json([
+                    'result' => false
+                ]);
+            }
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
     }
 }
