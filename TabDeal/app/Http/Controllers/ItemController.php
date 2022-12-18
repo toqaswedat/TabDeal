@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Front_user;
 use App\Models\Item;
 use App\Models\Item_favorite;
 use App\Models\Item_image;
@@ -42,6 +43,71 @@ class ItemController extends Controller
             return response()->json([ 
                 'result'=> true,
                 'reports'=>$Post
+            ]);
+        }
+        catch(Exception $ex)
+        {
+            return $ex->getMessage();
+        }  
+    }
+    public function get_user_fav_items(Request $request){
+        try{
+            $profile_url = 'https://tabdeal.online/';
+            $favItems = Item_favorite::where('frontuser_id', $request->frontuser_id)->get();
+            $IteemArray=array();
+            $imagesArray=array();
+            foreach($favItems as $favItem){
+                $Item=Item::where('id',$favItem->item_id)->get();
+                $FrontUser=Front_user::where('id',$Item[0]->frontuser_id)->get();
+                $Images=Item_image::where('item_id',$Item[0]->id)->get();  
+                $userArrayReviews=array();
+                foreach($Images as $Image){
+                        $imagesArray1=$Image->name;
+                array_push($imagesArray, $imagesArray1);
+                }
+                $time = strtotime($Item[0]->created_at);
+                $newformat = date('Y-m-d',$time);
+                $time1 = strtotime($Item[0]->updated_at);
+                $newformat1 = date('Y-m-d h:m:s',$time1);
+                $time2 = strtotime($FrontUser[0]->created_at);
+                $newformat2 = date('d M, Y',$time2);
+                $userArrayReviews["id"]=$Item[0]->id;
+                $userArrayReviews["itemsectioncategoryid"]=$Item[0]->itemsectioncategoryid;
+                $userArrayReviews["itemsectionsubcategoryid"]=$Item[0]->itemsectionsubcategoryid;
+                $userArrayReviews["frontuser_id"]=$Item[0]->frontuser_id;
+                $userArrayReviews["title"]=$Item[0]->title;
+                $userArrayReviews["description"]=$Item[0]->description;
+                $userArrayReviews["preferred_item"]=$Item[0]->preferred_item;
+                $userArrayReviews["itemtype"]=$Item[0]->itemtype;
+                $userArrayReviews["offerdemandswap"]=$Item[0]->offerdemandswap;
+                $userArrayReviews["mbu"]=$Item[0]->mbu;
+                $userArrayReviews["quantity"]=$Item[0]->quantity;
+                $userArrayReviews["unit"]=$Item[0]->unit;
+                $userArrayReviews["itemtags"]=$Item[0]->itemtags;
+                $userArrayReviews["country_id"]=$Item[0]->country_id;
+                $userArrayReviews["state_id"]=$Item[0]->state_id;
+                $userArrayReviews["city_id"]=$Item[0]->city_id;
+                $userArrayReviews["status"]=$Item[0]->status;
+                $userArrayReviews["item_status"]=$Item[0]->item_status;
+                $userArrayReviews["statusupdatetime"]=$Item[0]->statusupdatetime;
+                $userArrayReviews["poststatusupdate"]=$Item[0]->poststatusupdate;
+                $userArrayReviews["totalview"]=$Item[0]->totalview;
+                $userArrayReviews["created_at"]=$newformat;
+                $userArrayReviews["updated_at"]=$newformat1;
+                $userArrayReviews["username"]=$FrontUser[0]->vFirstName." ".$FrontUser[0]->vLastName;
+                $userArrayReviews["user_image"]=$profile_url.'api/uploads/users/'.$FrontUser[0]->vProfilePic;
+                $userArrayReviews["join_time"]=$newformat2;
+                $userArrayReviews["acc_type"]=$FrontUser[0]->eMemberType;
+                $userArrayReviews["tp"]=$Item[0]->mbu;
+                $userArrayReviews["post_type"]=strtolower($Item[0]->itemtype);
+                $userArrayReviews["thumb"]=$profile_url.'api/uploads/items/'.$imagesArray[0];
+                $userArrayReviews["image"]=$imagesArray;
+                $imagesArray=array();
+                array_push($IteemArray, $userArrayReviews);
+            }
+            return response()->json([ 
+                'result'=> true,
+                'fav'=>$IteemArray
             ]);
         }
         catch(Exception $ex)
