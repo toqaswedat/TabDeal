@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicController;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +27,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/business', [BusinessController::class, 'getAllBusinesses']);
 Route::get('/item-byId', [ItemController::class, 'getItemById']);
+Route::get('/dashboard', [DashboardController::class, 'Dashboard']);
+Route::get('/profile', [ProfileController::class, 'getUsersProfile']);
 
 
 Route::controller(TopicController::class)->group(function () {
