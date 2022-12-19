@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -22,7 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::controller(NotificationController::class)->group(function () {
+    Route::get('/notifications', 'notifications');
+});
 
 Route::controller(CityController::class)->group(function () {
     Route::post('/getuserCity', 'get_userCity');
