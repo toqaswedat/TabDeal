@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AddDataController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\NotificationController;
@@ -25,6 +28,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/notifications', 'notifications');
+});
+Route::controller(ChatController::class)->group(function () {
+    Route::get('/chat_archive', 'chat_archive');
 });
 
 Route::controller(CityController::class)->group(function () {
@@ -52,8 +58,14 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/get_item_deals', 'get_item_deals');
     Route::post('/add_credits', 'add_credits');
     Route::post('/automatch', 'automatch');
-    Route::post('/deals_num', 'deals_number');
+    Route::post('/save_profile', 'save_profile');
     Route::delete('/rem_favourite/{user_id}/{item_id}', 'rem_favourite');
 });
 
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/login', 'loginUser');
+});
 
+Route::controller(AddDataController::class)->group(function () {
+    Route::get('/add_data', 'add_data');
+});

@@ -9,11 +9,11 @@ use App\Models\Item;
 use App\Models\Item_favorite;
 use App\Models\Item_image;
 use App\Models\Item_report;
+use App\Models\User;
 use App\Models\Wallet_transaction;
 use Exception;
 use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -259,4 +259,18 @@ class UserController extends Controller
             return $ex->getMessage();
         }  
     }
+    public function save_profile(Request $request){
+        try{
+        if($request->img != NULL && $request->img != 'assets/images/profile.png')
+        return response()->json([ 
+            'result'=> true,
+
+        ]);
+        }
+        catch(Exception $ex)
+        {
+            return $ex->getMessage();
+        }  
+    }
+    
 }
