@@ -2,13 +2,18 @@
 
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DealController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicController;
-use App\Models\Notification;
+use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,26 +26,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
-Route::get('/business', [BusinessController::class, 'getAllBusinesses']);
-Route::get('/item-byId', [ItemController::class, 'getItemById']);
+Route::get('/business_user', [BusinessController::class, 'getAllBusinesses']);
 Route::get('/dashboard', [DashboardController::class, 'Dashboard']);
 Route::get('/profile', [ProfileController::class, 'getUsersProfile']);
+Route::put('/update_trade', [DealController::class, 'updateTrade']);
 
 
 Route::controller(TopicController::class)->group(function () {
-    Route::get('/topic-byUrl', 'getTopicsByUrlHiw');
-    Route::get('/topic-byUrl-video', 'getTopicsByUrlVideos');
-    Route::get('/topic-byFaq-data', 'getTopicsByFaq');
+    Route::get('/faq_hiw', 'getTopicsByUrlHiw');
+    Route::get('/hiw_videos', 'getTopicsByUrlVideos');
+    Route::get('/faq_data', 'getTopicsByFaq');
 });
 Route::controller(MessageController::class)->group(function () {
-    Route::get('/unseen-message', 'getMessageUnseen');
-    Route::get('/update-message-seen', 'updateMessage');
+    Route::get('/get_unseen', 'getMessageUnseen');
+    Route::put('/msg_seen', 'updateMessage');
 });
 Route::controller(NotificationController::class)->group(function () {
-    Route::get('/update-notification-seen', 'updateNotificationSeen');
-    Route::get('/unseen-notification', 'getUnseenNotification');
+    Route::put('/noti_seen', 'updateNotificationSeen');
+    Route::get('/noti_check', 'getUnseenNotification');
+});
+Route::controller(ItemController::class)->group(function () {
+    Route::get('/get_all_items', 'getItemById');
+    Route::delete('/delete_data', 'deleteData');
 });
