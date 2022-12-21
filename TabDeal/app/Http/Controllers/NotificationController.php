@@ -84,6 +84,7 @@ class NotificationController extends Controller
     public function updateNotificationSeen(Request $request)
     {
         try {
+            // return $request->user_id;
             $Notifications = Notification::where('user_id', $request->user_id)->update(['seen' => 1]);
             if ($Notifications) {
                 return response()->json([
