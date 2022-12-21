@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DealController;
@@ -53,3 +54,12 @@ Route::controller(ItemController::class)->group(function () {
     Route::get('/get_all_items', 'getItemById');
     Route::delete('/delete_data', 'deleteData');
 });
+
+/*
+* The route below is only for testing registration proccess and will be removed once the solution is accepted
+*/ 
+Route::get('/testUsers',[AuthController::class,'testUsers']);
+
+/*
+* The route above is only for testing registration proccess and will be removed once the solution is accepted
+*/ 
