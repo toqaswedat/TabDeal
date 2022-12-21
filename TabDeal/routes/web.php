@@ -26,14 +26,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/business_user', [BusinessController::class, 'getAllBusinesses']);
 Route::get('/dashboard', [DashboardController::class, 'Dashboard']);
 Route::get('/profile', [ProfileController::class, 'getUsersProfile']);
-Route::put('/update_trade', [DealController::class, 'updateTrade']);
+
+Route::controller(DealController::class)->group(function(){
+    Route::put('/update_trade', 'updateTrade');
+    Route::put('/change_status', 'changeStatus');
+});
 
 
 Route::controller(TopicController::class)->group(function () {
