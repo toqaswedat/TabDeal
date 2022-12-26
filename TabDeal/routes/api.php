@@ -7,6 +7,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SectionsController;
+use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,7 @@ Route::controller(NotificationController::class)->group(function () {
 });
 Route::controller(ChatController::class)->group(function () {
     Route::get('/chat_archive', 'chat_archive');
+    Route::get('/chat_list', 'chat_list');
 });
 
 Route::controller(CityController::class)->group(function () {
@@ -70,3 +72,8 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(AddDataController::class)->group(function () {
     Route::get('/add_data', 'add_data');
 });
+
+Route::controller(TopicController::class)->group(function () {
+    Route::get('/get_blog', 'get_blog');
+});
+
