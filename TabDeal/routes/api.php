@@ -66,6 +66,7 @@ Route::controller(UserController::class)->group(function () {
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'loginUser');
+    Route::post('/register','registerUser');
 });
 
 Route::controller(AddDataController::class)->group(function () {

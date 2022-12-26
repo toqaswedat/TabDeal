@@ -11,7 +11,7 @@ class Notification extends Model
     public $timestamps = false;
     protected $table = 'notification';
     protected $fillable = [
-        'id', 'form_id', 'notification', 'user_id', 'trade_id', 'type', 'seen', 'timestamp'
+        'id', 'from_id', 'notification', 'user_id', 'trade_id', 'type', 'seen', 'timestamp'
     ];
 
 }
