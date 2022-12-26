@@ -9,7 +9,7 @@ use App\Models\Item_image;
 use App\Models\Item_report;
 use Illuminate\Http\Request;
 use Exception;
-
+use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
@@ -156,30 +156,82 @@ class ItemController extends Controller
     public function get_offers(Request $request)
     { //params: last_id,search,frontuser_id
         // get all offers based on data provided
-        
+      
+        if($request->user_id){ //returns offers of a queried User
+
+    $offers = Item::where('offerdemandswap', 'OFFERED')
+            ->where('item_status', 'Available')
+            ->where('frontuser_id', $request->user_id)
+            ->where('status', 'ACTIVE')
+            ->get();  //List of offers that are: Offered, Active, available and belong to the current queried user
+        return response()->json([
+            'result' => true,
+            'offers' => $offers]); //JSON array name
+
+        }
+        else{
+
         $offers = Item::where('offerdemandswap', 'OFFERED')
             ->where('item_status', 'Available')
             ->where('status', 'ACTIVE')
-            ->get();  //List of offers that are: Offered, Active and available
-            
-
-
+            ->get();  //Lists ALL offers that are: Offered, Active and available
         return response()->json([
             'result' => true,
             'offers' => $offers //JSON array name
         ]);
     }
+    if($request->search){ //returns search results when there's a search key (still not sure which fields should i return yet)
+
+        // $searchKey = $request->search;
+        // Item::Where('', 'like', '%' . $searchKey . '%')
+        //         ->orWhere('', 'like', '%' . $searchKey . '%')
+        //         ->orWhere('', 'like', '%' . $searchKey . '%')
+        //         ->orWhere('', 'like', '%' . $searchKey . '%')->get();
+
+
+    }
+}
     public function get_cat_offers(Request $request)
     { //params: cat,sub_cat,last_id
         // get offers from a certain category / subcategory
+
+        //category table is empty (where are the categories stored?)
+
+
     }
     public function get_demand(Request $request)
     { //params: last_id,search,user_id
         //get demands based on provider variables
+
+
+        if($request->user_id){ //returns DEMAND of a queried User
+
+            $demands = Item::where('offerdemandswap', 'DEMAND')
+                    ->where('item_status', 'Available')
+                    ->where('frontuser_id', $request->user_id)
+                    ->where('status', 'ACTIVE')
+                    ->get();  //List of DEMANDs that are: DEMAND, Active, available and belong to the current queried user
+                return response()->json([
+                    'result' => true,
+                    'demands' => $demands]); //JSON array name
+        
+                }
+                else{
+        
+                $demands = Item::where('offerdemandswap', 'DEMAND')
+                    ->where('item_status', 'Available')
+                    ->where('status', 'ACTIVE')
+                    ->get();  //Lists ALL demands that are: DEMAND, Active and available
+                return response()->json([
+                    'result' => true,
+                    'demands' => $demands //JSON array name
+                ]);
+            }
     }
     public function get_cat_demand(Request $request)
     { //params: cat,sub_cat,last_id
         // get demands from a certain category
+         //category table is empty (where are the categories stored?)
     }
     public function search(Request $request)
     { //params: itype,search
