@@ -32,7 +32,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/business_user', [BusinessController::class, 'getAllBusinesses']);
 Route::get('/dashboard', [DashboardController::class, 'Dashboard']);
-Route::get('/profile', [ProfileController::class, 'getUsersProfile']);
+Route::controller(ProfileController::class)->group(function(){
+    Route::get('/profile', 'getUsersProfile');
+    Route::put('/update_profle', 'updateProfile');
+    Route::put('/update_current_balance', 'updateCurrentBalance');
+});
 
 Route::controller(DealController::class)->group(function(){
     Route::put('/update_trade', 'updateTrade');
