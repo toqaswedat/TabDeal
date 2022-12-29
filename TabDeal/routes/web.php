@@ -35,6 +35,7 @@ Route::get('/dashboard', [DashboardController::class, 'Dashboard']);
 Route::controller(ProfileController::class)->group(function(){
     Route::get('/profile', 'getUsersProfile');
     Route::put('/update_profle', 'updateProfile');
+    Route::put('/update_profle_business', 'updateProfileBusiness');
     Route::put('/update_current_balance', 'updateCurrentBalance');
 });
 

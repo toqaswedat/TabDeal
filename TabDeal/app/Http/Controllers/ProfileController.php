@@ -42,15 +42,15 @@ class ProfileController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'vLastName' => 'required|string|max:255',
+                'vLastName' => 'nullable|string|max:255',
                 'eMemberType' => 'required|string',
-                'vMobileNo' => 'required|string|max:15',
+                'vMobileNo' => 'nullable|string|max:15',
                 'email' => 'required|string|email|max:255',
                 'vAboutMe' => 'required|string',
                 'iProfessionsId' => 'required|integer',
-                'country_id' => 'required|integer',
-                'city_id' => 'required|integer',
-                'vFirstName' => 'required|string|max:255',
+                'country_id' => 'nullable|integer',
+                'city_id' => 'nullable|integer',
+                'vFirstName' => 'nullable|string|max:255',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -116,12 +116,55 @@ class ProfileController extends Controller
                 ]);
             } else {
                 return response()->json([
-                    'result' => true,
-                    'message' => 'Updated Successfully'
+                    'result' => false,
                 ]);
             }
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
+    }
+
+    public function updateProfileBusiness(Request $request){
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|int|max:1000',
+                'vFirstName' => 'nullable|string|max:255',
+                'vLastName' => 'nullable|string|max:255',
+                'vMobileNo' => 'nullable|string|max:15',
+                'vAboutMe' => 'nullable|string',
+                'country_id' => 'nullable|integer',
+                'city_id' => 'nullable|integer'
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+
+            $ProfileBusiness = Front_user::where('id', $request->id)->where('eMemberType','Business')->update([
+                'vFirstName' => $request->vFirstName,
+                'vLastName' => $request->vLastName,
+                'vMobileNo' => $request->vMobileNo,
+                'vAboutMe' => $request->vAboutMe,
+                'country_id' => $request->country_id,
+                'city_id' => $request->city_id
+            ]);
+            if ($ProfileBusiness) {
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Updated Successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'result' => false,
+                ]);
+            }
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+
     }
 }
