@@ -98,4 +98,8 @@ Route::controller(BusinessController::class)->group(function () {
 Route::controller(Item_reportController::class)->group(function () {
     Route::get('/report', 'report');
     Route::get('/get_offers', 'get_offers');
+    Route::post('/get_cat_offers', 'get_cat_offers');
+    Route::post('/all_load_more', 'all_load_more');
+    Route::post('/search', 'search');
+    Route::post('/search_load_more', 'search_load_more');
 });
