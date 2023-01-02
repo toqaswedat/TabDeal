@@ -128,7 +128,7 @@ class ProfileController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'id' => 'required|int|max:1000',
+                'id' => 'required|int',
                 'vFirstName' => 'nullable|string|max:255',
                 'vLastName' => 'nullable|string|max:255',
                 'vMobileNo' => 'nullable|string|max:15',
@@ -166,5 +166,38 @@ class ProfileController extends Controller
             return $ex->getMessage();
         }
 
+    }
+
+    
+    public function updateProfileBusinessEmail(Request $request){
+        try{
+            $validator = validator::make($request->all(),[
+                'email' => 'required|string|email|max:255'
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);}
+
+
+            $updateEmail = Front_user::where('id', $request->id)->where('eMemberType','Business')->update([
+                'email' => $request->email
+                
+            ]);
+            if ($updateEmail) {
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Updated Successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'result' => false,
+                ]);
+            }
+
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
     }
 }

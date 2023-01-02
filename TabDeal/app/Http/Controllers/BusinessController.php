@@ -33,4 +33,46 @@ class BusinessController extends Controller
             return $ex->getMessage();
         }
     }
+
+    public function updateBusinessProfile(Request $request){
+        try{
+            $validator = validator::make($request->all(),[
+                'vName' => 'required|string|max:255',
+                'vVatNumber' => 'required|integer',
+                'vBusinessAddress' => 'required|string|max:1000',
+                'vBusinessAddress2' => 'nullable|string|max:1000',
+                'vWebsiteAddress' => 'nullable|url',
+                'iBusinessCategoryId' => 'required|integer'
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);}
+
+
+            $businesUpdate = Business::where('id', $request->id)->update([
+                'vName' => $request->vName,
+                'vVatNumber' => $request->vVatNumber,
+                'vBusinessAddress' => $request->vBusinessAddress,
+                'vBusinessAddress2' => $request->vBusinessAddress2,
+                'vWebsiteAddress' => $request->vWebsiteAddress,
+                'iBusinessCategoryId' => $request->iBusinessCategoryId
+                //THIS END POINT STILL NEED IMG UPDATE
+            ]);
+            if ($businesUpdate) {
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Updated Successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'result' => false,
+                ]);
+            }
+
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
 }
