@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+    
 use App\Models\Business;
 use App\Models\Business_category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 
 class BusinessController extends Controller
@@ -33,6 +34,46 @@ class BusinessController extends Controller
             return $ex->getMessage();
         }
     }
+
+
+    public function updateBusinessProfile(Request $request){
+        try{
+            $validator = validator::make($request->all(),[
+                'vName' => 'required|string|max:255',
+                'vVatNumber' => 'required|integer',
+                'vBusinessAddress' => 'required|string|max:1000',
+                'vBusinessAddress2' => 'nullable|string|max:1000',
+                'vWebsiteAddress' => 'nullable|url',
+                'iBusinessCategoryId' => 'required|integer'
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);}
+
+
+            $businesUpdate = Business::where('id', $request->id)->update([
+                'vName' => $request->vName,
+                'vVatNumber' => $request->vVatNumber,
+                'vBusinessAddress' => $request->vBusinessAddress,
+                'vBusinessAddress2' => $request->vBusinessAddress2,
+                'vWebsiteAddress' => $request->vWebsiteAddress,
+                'iBusinessCategoryId' => $request->iBusinessCategoryId
+                //THIS END POINT STILL NEED IMG UPDATE
+            ]);
+            if ($businesUpdate) {
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Updated Successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'result' => false,
+                ]);
+            }
+
+
     public function get_business_categories()
     {
         try {
@@ -40,6 +81,7 @@ class BusinessController extends Controller
             return response()->json([
                 'data' => $business_categories
             ]);
+
         } catch (Exception $ex) {
             return $ex->getMessage();
         }

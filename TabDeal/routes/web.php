@@ -7,6 +7,7 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\disputedDealController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicController;
@@ -31,14 +32,24 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/business_user', [BusinessController::class, 'getAllBusinesses']);
+Route::controller(BusinessController::class)->group(function(){
+    Route::get('/business_user', 'getAllBusinesses');
+    Route::put('/update_profile_business_', 'updateBusinessProfile');
+});
 Route::get('/dashboard', [DashboardController::class, 'Dashboard']);
-Route::get('/profile', [ProfileController::class, 'getUsersProfile']);
+Route::controller(ProfileController::class)->group(function(){
+    Route::get('/profile', 'getUsersProfile');
+    Route::put('/update_profle', 'updateProfile');
+    Route::put('/update_profle_business', 'updateProfileBusiness');
+    Route::put('/update_current_balance', 'updateCurrentBalance');
+    Route::put('/update_profile_business_email', 'updateProfileBusinessEmail');
+});
 
 Route::controller(DealController::class)->group(function(){
     Route::put('/update_trade', 'updateTrade');
     Route::put('/change_status', 'changeStatus');
 });
+Route::post('/dispute_deal', [disputedDealController::class, 'disputed_deal']);
 
 
 Route::controller(TopicController::class)->group(function () {
@@ -57,6 +68,9 @@ Route::controller(NotificationController::class)->group(function () {
 Route::controller(ItemController::class)->group(function () {
     Route::get('/get_all_items', 'getItemById');
     Route::delete('/delete_data', 'deleteData');
+    Route::put('/update_post_offer', 'updatePostOffer');
+    Route::put('/update_demand_offer', 'updateDemandOffer');
+});
 });
 
 /*

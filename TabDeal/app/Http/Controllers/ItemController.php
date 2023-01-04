@@ -8,6 +8,7 @@ use App\Models\Item_favorite;
 use App\Models\Item_image;
 use App\Models\Item_report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
@@ -136,6 +137,120 @@ class ItemController extends Controller
     }
 
 
+    public function updatePostOffer(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|int',
+                'itemtype' => 'required|in:PRODUCT,SERVICE',
+                'title' => 'required|string|max:65535',
+                'description' => 'required|string|max:65535',
+                'itemsectioncategoryid' => 'required|integer',
+                'itemsectionsubcategoryid' => 'required|integer',
+                'mbu' => 'required|integer',
+                'unit' => 'required|in:PER VISIT,PER SESSION,PER HOUR,PER UNIT,PER PACKAGE',
+                'country_id' => 'required|integer',
+                'city_id' => 'required|integer',
+                'preferred_item' => 'nullable|string|max:65535',
+                'item_status' => 'required|in:Unavailable,Available'
+
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $PostOffer = Item::where('id', $request->id)->where('offerdemandswap','OFFERED')->update([
+                'itemtype' => $request->itemtype,
+                'title' => $request->title,
+                'description' => $request->description,
+                'itemsectioncategoryid' => $request->itemsectioncategoryid,
+                'itemsectionsubcategoryid' => $request->itemsectionsubcategoryid,
+                'mbu' => $request->mbu,
+                'unit' => $request->unit,
+                'country_id' => $request->country_id,
+                'city_id' => $request->city_id,
+                'preferred_item' => $request->preferred_item,
+                'item_status' => $request->item_status
+        ]);
+            // THIS ENDPOINT STILL NEED IMG UPDATE
+
+            if ($PostOffer) {
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Updated Successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'result' => false
+                ]);
+            }
+
+        
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+
+    }
+
+    public function updateDemandOffer(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|int',
+                'itemtype' => 'required|in:PRODUCT,SERVICE',
+                'title' => 'required|string|max:65535',
+                'description' => 'required|string|max:65535',
+                'itemsectioncategoryid' => 'required|integer',
+                'itemsectionsubcategoryid' => 'required|integer',
+                'country_id' => 'required|integer',
+                'city_id' => 'required|integer',
+                'preferred_item' => 'nullable|string|max:65535',
+                'item_status' => 'required|in:Unavailable,Available'
+
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $demandOffer = Item::where('id', $request->id)->where('offerdemandswap','DEMAND')->update([
+                'itemtype' => $request->itemtype,
+                'title' => $request->title,
+                'description' => $request->description,
+                'itemsectioncategoryid' => $request->itemsectioncategoryid,
+                'itemsectionsubcategoryid' => $request->itemsectionsubcategoryid,
+                'country_id' => $request->country_id,
+                'city_id' => $request->city_id,
+                'preferred_item' => $request->preferred_item,
+                'item_status' => $request->item_status
+        ]);
+           // THIS ENDPOINT STILL NEED IMG UPDATE
+
+
+
+
+
+            if ($demandOffer) {
+                return response()->json([
+                    'result' => true,
+                    'message' => 'Updated Successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'result' => false
+                ]);
+            }
+
+        
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+
+
+
 
     /*
 * The lines below are the functions responsible for Item CRUD operations
@@ -252,5 +367,6 @@ class ItemController extends Controller
     public function post_demand(Request $request)
     { //params: post_type,title,des,prefer,cat,subcat,country,city,user_id,images
         // inserting a demand using the data provided
+
     }
 }

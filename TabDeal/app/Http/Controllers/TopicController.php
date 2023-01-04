@@ -21,7 +21,6 @@ class TopicController extends Controller
     public function getTopicsByUrlHiw()
     {
         try {
-
             $topics = Topics::where('content_url', 'how-it-works_howitworks')->get();
             return response()->json([
                 'result' => true,
