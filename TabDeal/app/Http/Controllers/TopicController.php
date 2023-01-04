@@ -60,4 +60,31 @@ class TopicController extends Controller
             return $ex->getMessage();
         }
     }
+    public function get_blog(Request $request)
+    {
+        try {
+            $topics = Topics::where('webmaster_id',$request->webmaster_id )->get();
+            return response()->json([
+                'data' => $topics
+            ]);
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public function get_terms(Request $request)
+    {
+        try {
+            $topics = Topics::where('id',$request->id )->get();
+            return response()->json([
+                'data' => $topics
+            ]);
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    
 }
+
+

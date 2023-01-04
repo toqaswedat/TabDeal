@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DealController;
@@ -70,3 +71,13 @@ Route::controller(ItemController::class)->group(function () {
     Route::put('/update_post_offer', 'updatePostOffer');
     Route::put('/update_demand_offer', 'updateDemandOffer');
 });
+});
+
+/*
+* The route below is only for testing registration proccess and will be removed once the solution is accepted
+*/ 
+Route::get('/testUsers',[AuthController::class,'testUsers']);
+
+/*
+* The route above is only for testing registration proccess and will be removed once the solution is accepted
+*/ 

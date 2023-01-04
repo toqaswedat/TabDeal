@@ -1,9 +1,16 @@
 <?php
 
+use App\Http\Controllers\AddDataController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\Item_reportController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfessionController;
 use App\Http\Controllers\SectionsController;
+use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,8 +30,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Route::post('/get_favourite', [UserController:class,'get_favourite'])->middleware('auth:sanctum');
+
+// Route::post('/get_favourite', [UserController::class, 'get_favourite'])->middleware('auth:sanctum');
+
+
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/notifications', 'notifications');
+});
+Route::controller(ChatController::class)->group(function () {
+    Route::get('/chat_archive', 'chat_archive');
+    Route::get('/chat_list', 'chat_list');
 });
 
 Route::controller(CityController::class)->group(function () {
@@ -47,13 +63,43 @@ Route::controller(SectionsController::class)->group(function () {
 
 Route::controller(UserController::class)->group(function () {
     Route::post('/deals_num', 'deals_number');
-    Route::post('/get_favourite', 'get_favourite');
-    Route::get('/get_item_reviews', 'get_item_reviews');
+    Route::post('/get_favourite', 'get_favourite')->middleware('auth:sanctum');
+    Route::get('/get_item_reviews', 'get_item_reviews')->middleware('auth:sanctum');
     Route::get('/get_item_deals', 'get_item_deals');
     Route::post('/add_credits', 'add_credits');
     Route::post('/automatch', 'automatch');
-    Route::post('/deals_num', 'deals_number');
+    Route::post('/save_profile', 'save_profile');
     Route::delete('/rem_favourite/{user_id}/{item_id}', 'rem_favourite');
 });
 
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/login', 'loginUser')->name('login');
+    Route::post('/register','registerUser');
+});
 
+Route::controller(AddDataController::class)->group(function () {
+    Route::get('/add_data', 'add_data');
+});
+
+Route::controller(TopicController::class)->group(function () {
+    Route::get('/get_blog', 'get_blog');
+    Route::get('/get_terms', 'get_terms');
+});
+
+Route::controller(ProfessionController::class)->group(function () {
+    Route::get('/get_profession', 'get_profession');
+});
+
+Route::controller(BusinessController::class)->group(function () {
+    Route::get('/get_business_categories', 'get_business_categories');
+});
+
+
+Route::controller(Item_reportController::class)->group(function () {
+    Route::get('/report', 'report');
+    Route::get('/get_offers', 'get_offers');
+    Route::post('/get_cat_offers', 'get_cat_offers');
+    Route::post('/all_load_more', 'all_load_more');
+    Route::post('/search', 'search');
+    Route::post('/search_load_more', 'search_load_more');
+});

@@ -10,9 +10,11 @@ use App\Models\Item_report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
+
     /**
      * Handle the incoming request.
      *
@@ -134,6 +136,7 @@ class ItemController extends Controller
         }
     }
 
+
     public function updatePostOffer(Request $request){
         try {
             $validator = Validator::make($request->all(), [
@@ -245,6 +248,125 @@ class ItemController extends Controller
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
+
+
+
+
+    /*
+* The lines below are the functions responsible for Item CRUD operations
+* 1.get_offers
+* 2.get_cat_offers
+* 3.get_demand
+* 4.get_cat_demand
+* 5.search (no need for search_load_more since we use withPagination in laravel)
+* 6.update_post_offer
+* 7.update_demand_offer
+* 8.post_offer
+* 7.post_demand
+* 8.delete_demand
+* 9.delete_offer
+ */
+
+
+    public function get_offers(Request $request)
+    { //params: last_id,search,frontuser_id
+        // get all offers based on data provided
+      
+        if($request->user_id){ //returns offers of a queried User
+
+    $offers = Item::where('offerdemandswap', 'OFFERED')
+            ->where('item_status', 'Available')
+            ->where('frontuser_id', $request->user_id)
+            ->where('status', 'ACTIVE')
+            ->get();  //List of offers that are: Offered, Active, available and belong to the current queried user
+        return response()->json([
+            'result' => true,
+            'offers' => $offers]); //JSON array name
+
+        }
+        else{
+
+        $offers = Item::where('offerdemandswap', 'OFFERED')
+            ->where('item_status', 'Available')
+            ->where('status', 'ACTIVE')
+            ->get();  //Lists ALL offers that are: Offered, Active and available
+        return response()->json([
+            'result' => true,
+            'offers' => $offers //JSON array name
+        ]);
+    }
+    if($request->search){ //returns search results when there's a search key (still not sure which fields should i return yet)
+
+        // $searchKey = $request->search;
+        // Item::Where('', 'like', '%' . $searchKey . '%')
+        //         ->orWhere('', 'like', '%' . $searchKey . '%')
+        //         ->orWhere('', 'like', '%' . $searchKey . '%')
+        //         ->orWhere('', 'like', '%' . $searchKey . '%')->get();
+
+
+    }
+}
+    public function get_cat_offers(Request $request)
+    { //params: cat,sub_cat,last_id
+        // get offers from a certain category / subcategory
+
+        //category table is empty (where are the categories stored?)
+
+
+    }
+    public function get_demand(Request $request)
+    { //params: last_id,search,user_id
+        //get demands based on provider variables
+
+
+        if($request->user_id){ //returns DEMAND of a queried User
+
+            $demands = Item::where('offerdemandswap', 'DEMAND')
+                    ->where('item_status', 'Available')
+                    ->where('frontuser_id', $request->user_id)
+                    ->where('status', 'ACTIVE')
+                    ->get();  //List of DEMANDs that are: DEMAND, Active, available and belong to the current queried user
+                return response()->json([
+                    'result' => true,
+                    'demands' => $demands]); //JSON array name
+        
+                }
+                else{
+        
+                $demands = Item::where('offerdemandswap', 'DEMAND')
+                    ->where('item_status', 'Available')
+                    ->where('status', 'ACTIVE')
+                    ->get();  //Lists ALL demands that are: DEMAND, Active and available
+                return response()->json([
+                    'result' => true,
+                    'demands' => $demands //JSON array name
+                ]);
+            }
+    }
+    public function get_cat_demand(Request $request)
+    { //params: cat,sub_cat,last_id
+        // get demands from a certain category
+         //category table is empty (where are the categories stored?)
+    }
+    public function search(Request $request)
+    { //params: itype,search
+        // search item via type or by using a keyword
+    }
+    public function update_post_offer(Request $request)
+    { //params: post_type,title,des,prefer,cat,subcat,tp,unit,country,city,user_id,images,id,item_status
+        // updating an existing offer using the data provided
+    }
+    public function update_demand_offer(Request $request)
+    { //params: post_type,title,des,prefer,cat,subcat,country,city,user_id,images,post_id,item_status
+        // updating an existing demand using the data provided
+    }
+    public function post_offer(Request $request)
+    { //params: post_type,title,des,prefer,cat,subcat,tp,unit,country,city,user_id,images
+        // inserting  an offer using the data provided
+    }
+    public function post_demand(Request $request)
+    { //params: post_type,title,des,prefer,cat,subcat,country,city,user_id,images
+        // inserting a demand using the data provided
 
     }
 }
