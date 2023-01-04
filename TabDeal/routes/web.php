@@ -6,6 +6,7 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\disputedDealController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicController;
@@ -47,6 +48,7 @@ Route::controller(DealController::class)->group(function(){
     Route::put('/update_trade', 'updateTrade');
     Route::put('/change_status', 'changeStatus');
 });
+Route::post('/dispute_deal', [disputedDealController::class, 'disputed_deal']);
 
 
 Route::controller(TopicController::class)->group(function () {

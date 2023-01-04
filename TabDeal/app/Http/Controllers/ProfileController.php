@@ -126,7 +126,6 @@ class ProfileController extends Controller
 
     public function updateProfileBusiness(Request $request){
         try {
-
             $validator = Validator::make($request->all(), [
                 'id' => 'required|int',
                 'vFirstName' => 'nullable|string|max:255',
@@ -141,9 +140,7 @@ class ProfileController extends Controller
                     'result' => false,
                     'errors' => $validator->errors()
                 ], 422);
-            }
-
-
+            }else{
             $ProfileBusiness = Front_user::where('id', $request->id)->where('eMemberType','Business')->update([
                 'vFirstName' => $request->vFirstName,
                 'vLastName' => $request->vLastName,
@@ -161,7 +158,7 @@ class ProfileController extends Controller
                 return response()->json([
                     'result' => false,
                 ]);
-            }
+            } }
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
