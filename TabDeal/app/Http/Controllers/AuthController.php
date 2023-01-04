@@ -8,22 +8,25 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Models\Comission_setting;
 use App\Models\Wallet_transaction;
+use Dotenv\Util\Str;
 use Illuminate\Support\Facades\Auth;
 use Nette\Utils\Image;
 
 class AuthController extends Controller
 {
     //
+
     public function loginUser(Request $request)
     {
         try {
             if ($request->email) {
-                if (Auth::attempt($request->only('email', 'password'))) {
-                    $user = User::where('email', $request->email)->first();
-                    $frontUser = Front_user::where('email', $user->email)->first();
+                $credentials = $request->only('email', 'password');
+                if (Auth::attempt($credentials)) {
+                    $frontUser = Front_user::where('email', $request->email)->first();
                     return response()->json([
-                        'user_id' => $user->id,
-                        'name' => $user->name,
+                        'eIsVerified' => $frontUser->eIsVerified,
+                        'user_id' => $frontUser->id,
+                        'name' => $frontUser->vFirstName . " " . $frontUser->vLastName,
                         'user_type' => $frontUser->eMemberType,
                         'points' => $frontUser->current_balance,
                         'business_name' => $frontUser->business_name,
@@ -31,7 +34,7 @@ class AuthController extends Controller
                         'status' => $frontUser->status,
                         'result' => 'true',
                         'message' => 'login Successfully',
-                        // 'token' => $user->createToken("API TOKEN")->plainTextToken
+                        'token' => $frontUser->createToken($request->email)->plainTextToken
                     ]);
                 } else {
                     return response()->json([

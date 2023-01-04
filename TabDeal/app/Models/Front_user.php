@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Front_user extends Model
+class Front_user extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory,HasApiTokens;
     protected $table = 'front_users';
     protected $fillable = ["iReferalFrontUsersId","eMemberType","vFirstName", "vLastName", "business_name","email","email_verified_at","password","c_code",
     "vMobileNo","iProfessionsId","vProfilePic","vAboutMe","vNickName","vIdProof","interests","country_id","state_id","city_id"
