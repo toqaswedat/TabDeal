@@ -50,30 +50,34 @@ class BusinessController extends Controller
                 return response()->json([
                     'result' => false,
                     'errors' => $validator->errors()
-                ], 422);}
-
-
-            $businesUpdate = Business::where('id', $request->id)->update([
-                'vName' => $request->vName,
-                'vVatNumber' => $request->vVatNumber,
-                'vBusinessAddress' => $request->vBusinessAddress,
-                'vBusinessAddress2' => $request->vBusinessAddress2,
-                'vWebsiteAddress' => $request->vWebsiteAddress,
-                'iBusinessCategoryId' => $request->iBusinessCategoryId
-                //THIS END POINT STILL NEED IMG UPDATE
-            ]);
-            if ($businesUpdate) {
-                return response()->json([
-                    'result' => true,
-                    'message' => 'Updated Successfully'
+                ], 422);}else{ 
+                    
+                    $businesUpdate = Business::where('id', $request->id)->update([
+                    'vName' => $request->vName,
+                    'vVatNumber' => $request->vVatNumber,
+                    'vBusinessAddress' => $request->vBusinessAddress,
+                    'vBusinessAddress2' => $request->vBusinessAddress2,
+                    'vWebsiteAddress' => $request->vWebsiteAddress,
+                    'iBusinessCategoryId' => $request->iBusinessCategoryId
+                    //THIS END POINT STILL NEED IMG UPDATE
                 ]);
-            } else {
-                return response()->json([
-                    'result' => false,
-                ]);
-            }
+                if ($businesUpdate) {
+                    return response()->json([
+                        'result' => true,
+                        'message' => 'Updated Successfully'
+                    ]);
+                } else {
+                    return response()->json([
+                        'result' => false,
+                    ]);
+                }}
 
 
+            } catch (Exception $ex) {
+                return $ex->getMessage();
+            }}
+
+        
     public function get_business_categories()
     {
         try {
@@ -86,4 +90,4 @@ class BusinessController extends Controller
             return $ex->getMessage();
         }
     }
-}
+        }
