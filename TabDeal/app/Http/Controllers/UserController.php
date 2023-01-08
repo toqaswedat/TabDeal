@@ -15,6 +15,7 @@ use App\Models\Wallet_transaction;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -314,4 +315,20 @@ class UserController extends Controller
            return $ex->getMessage();
         }
     }
+
+
+    public function get_reivew(Request $request)
+    {
+        try {
+            $Reivew = Frontuser_dealreview::where('deal_id',$request->deal_id)
+            ->where('userid_receiver',$request->userid_receiver)
+            ->orderBy('id', 'desc')->get();
+            return response()->json([
+                'data' => $Reivew
+            ]);
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
 }

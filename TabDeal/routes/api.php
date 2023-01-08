@@ -42,6 +42,7 @@ Route::controller(NotificationController::class)->group(function () {
 Route::controller(ChatController::class)->group(function () {
     Route::get('/chat_archive', 'chat_archive');
     Route::get('/chat_list', 'chat_list');
+    Route::get('/report_user', 'report_user');
 });
 
 Route::controller(CityController::class)->group(function () {
@@ -53,6 +54,7 @@ Route::controller(ItemController::class)->group(function () {
     Route::get('/get_single_post', 'get_single_post');
     Route::get('/get_user_fav_items', 'get_user_fav_items');
     Route::get('/add_like', 'add_like');
+    Route::get('/post_offer', 'post_offer');
 
 });
 
@@ -72,6 +74,7 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/add_credits', 'add_credits');
     Route::post('/automatch', 'automatch');
     Route::post('/save_profile', 'save_profile');
+    Route::post('/get_reivew', 'get_reivew');
     Route::delete('/rem_favourite/{user_id}/{item_id}', 'rem_favourite');
     Route::get('/reivew', 'reivew');
 
@@ -106,6 +109,7 @@ Route::controller(Item_reportController::class)->group(function () {
     Route::post('/get_cat_offers', 'get_cat_offers');
     Route::post('/all_load_more', 'all_load_more');
     Route::post('/search', 'search');
+    Route::post('/get_barter', 'get_barter');
     Route::post('/search_load_more', 'search_load_more');
 });
 Route::controller(HelpsupportController::class)->group(function () {
