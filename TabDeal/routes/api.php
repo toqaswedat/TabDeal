@@ -55,6 +55,8 @@ Route::controller(ItemController::class)->group(function () {
     Route::get('/get_user_fav_items', 'get_user_fav_items');
     Route::get('/add_like', 'add_like');
     Route::get('/post_offer', 'post_offer');
+    Route::post('/post_offer', 'post_offer');
+    Route::post('/post_demand', 'post_demand');
 
 });
 
