@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfessionController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HelpsupportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,10 +47,12 @@ Route::controller(ChatController::class)->group(function () {
 Route::controller(CityController::class)->group(function () {
     Route::post('/getuserCity', 'get_userCity');
     Route::get('/getCitie', 'getCitie');
+
 });
 Route::controller(ItemController::class)->group(function () {
     Route::get('/get_single_post', 'get_single_post');
     Route::get('/get_user_fav_items', 'get_user_fav_items');
+    Route::get('/add_like', 'add_like');
 
 });
 
@@ -70,6 +73,8 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/automatch', 'automatch');
     Route::post('/save_profile', 'save_profile');
     Route::delete('/rem_favourite/{user_id}/{item_id}', 'rem_favourite');
+    Route::get('/reivew', 'reivew');
+
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -102,4 +107,7 @@ Route::controller(Item_reportController::class)->group(function () {
     Route::post('/all_load_more', 'all_load_more');
     Route::post('/search', 'search');
     Route::post('/search_load_more', 'search_load_more');
+});
+Route::controller(HelpsupportController::class)->group(function () {
+    Route::get('/help', 'help');
 });
