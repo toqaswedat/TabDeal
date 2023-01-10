@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\DealController;
 use App\Http\Controllers\Item_reportController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\NotificationController;
@@ -104,6 +105,10 @@ Route::controller(BusinessController::class)->group(function () {
     Route::get('/get_business_categories', 'get_business_categories');
 });
 
+Route::controller(DealController::class)->group(function () {
+    Route::post('/add_trade_demand_point', 'add_trade_demand_point');
+    Route::post('/add_trade_offer_point', 'add_trade_offer_point');
+});
 
 Route::controller(Item_reportController::class)->group(function () {
     Route::get('/report', 'report');

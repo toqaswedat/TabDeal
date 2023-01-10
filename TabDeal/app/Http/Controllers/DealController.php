@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chatroom;
 use App\Models\Deal;
+use App\Models\Front_user;
+use App\Models\Message;
 use App\Models\Notification;
 use App\Models\Chatroom;
 use App\Models\Message;
@@ -10,6 +13,7 @@ use App\Models\Front_user;
 use App\Models\Deal_Disputes;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class DealController extends Controller
@@ -182,5 +186,174 @@ class DealController extends Controller
 
         }
 
+     // start endpoint add_trade_demand_point
+         public function add_trade_demand_point(Request $request){
+            try{
+                function sendnotifications($user_id, $text, $from_id = 0, $trade_id = 0, $type = ''){
+                    Notification::create([
+                        'from_id' => $from_id,
+                        'notification' => $text,
+                        'user_id' => $user_id,
+                        'type' => $type,
+                        'trade_id' => $trade_id,
+                        'seen' => 0
+                    ]);
+                    
+                }
+                $validator = Validator::make($request->all(), [
+                    'owner_itemid' => 'required|integer',
+                    'mydeals_userid' => 'required|integer',
+                    'dealmaker_userid' => 'required|integer',
+                    'message' => 'required|string',
+                    'deal_type' => 'required|string',
+                    'quantity' => 'required|integer',
+                    'deal_price' => 'required|integer',
+                    'dealmaker_offerprice' => 'nullable|string',
+                    'seller_userid' => 'required|integer',
+                ]);
+                if ($validator->fails()) {
+                    return response()->json([
+                        'result' => false,
+                        'errors' => $validator->errors()
+                    ], 422);
+                }else{
+                $Deals=Deal::create([
+                    'owner_itemid'=>$request->owner_itemid,
+                    'mydeals_userid'=>$request->mydeals_userid,
+                    'dealmaker_userid'=>$request->dealmaker_userid,
+                    'message'=>$request->message,
+                    'deal_type'=>$request->deal_type,
+                    'quantity'=>$request->quantity,
+                    'deal_price'=>$request->deal_price,
+                    'dealmaker_offerprice'=>$request->dealmaker_offerprice,
+                    'seller_userid'=>$request->seller_userid,
+                ]);
+                $chat_rooms=Chatroom::create([
+                    'deal_id'=>$Deals->id,
+                    'sender_id'=>$request->dealmaker_userid,
+                    'receiver_id'=>$request->mydeals_userid,
+                    'item_id'=>$request->owner_itemid,
+                ]);
+                $messages=Message::create([
+                    'chatroom_id'=>$chat_rooms->id,
+                    'sender_id'=>$request->dealmaker_userid,
+                    'receiver_id'=>$request->mydeals_userid,
+                    'message'=>$request->message,
+                    'msg_type'=>'msg',
+                ]);
+                // sendnotifications($request->dealmaker_userid, $request->message, $request->mydeals_userid, $chat_rooms->id);
+                $EmailUser = Front_user::where('id', $request->dealmaker_userid)->get()->first();
+                
+                // send email 
+                // $data = ['message' => 'You started a Tabdeal trade'];
     
+                // Mail::send('mail@tabdeal.online', $data, function($message,$EmailUser)
+                // {
+                //     $message->to($EmailUser->email, $EmailUser->vFirstName)
+                //             ->subject('Tabdeal Trade');
+                // });
+                }
+                if($Deals){
+                    return response()->json([ 
+                        'result'=> true,
+                        'message'=>'Added Successfully'
+                    ]);
+                }else {
+                    return response()->json([ 
+                        'result'=> false,
+                    ]);
+                }
+            }
+            catch(Exception $ex)
+            {
+                return $ex->getMessage();
+            }
+    }
+    // end endpoint add_trade_demand_point
+
+    // start endpoint add_trade_offer_point
+    public function add_trade_offer_point(Request $request){
+        try{
+            function sendnotifications1($user_id, $text, $from_id = 0, $trade_id = 0, $type = ''){
+                Notification::create([
+                    'from_id' => $from_id,
+                    'notification' => $text,
+                    'user_id' => $user_id,
+                    'type' => $type,
+                    'trade_id' => $trade_id,
+                    'seen' => 0
+                ]);   
+            }
+            $validator = Validator::make($request->all(), [
+                'mydeals_userid' => 'required|integer',
+                'dealmaker_userid' => 'required|integer',
+                'dealmaker_offerprice' => 'nullable|string',
+                'againstowner_itemid' => 'required|integer',
+                'owner_itemid' => 'required|integer',
+                'message' => 'required|string',
+                'deal_type' => 'required|string',
+                'quantity' => 'required|integer',
+                'deal_price' => 'required|integer',
+                'seller_userid' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }else{
+            $Deals=Deal::create([
+                'mydeals_userid'=>$request->mydeals_userid,
+                'dealmaker_userid'=>$request->dealmaker_userid,
+                'dealmaker_offerprice'=>$request->dealmaker_offerprice,
+                'againstowner_itemid'=>$request->againstowner_itemid,
+                'owner_itemid'=>$request->owner_itemid,
+                'message'=>$request->message,
+                'deal_type'=>$request->deal_type,
+                'quantity'=>$request->quantity,
+                'deal_price'=>$request->deal_price,
+                'seller_userid'=>$request->seller_userid,
+            ]);
+            $chat_rooms=Chatroom::create([
+                'deal_id'=>$Deals->id,
+                'sender_id'=>$request->dealmaker_userid,
+                'receiver_id'=>$request->mydeals_userid,
+                'item_id'=>$request->owner_itemid,
+            ]);
+            $messages=Message::create([
+                'chatroom_id'=>$chat_rooms->id,
+                'sender_id'=>$request->dealmaker_userid,
+                'receiver_id'=>$request->mydeals_userid,
+                'message'=>$request->message,
+                'msg_type'=>'msg',
+            ]);
+            // sendnotifications1($request->dealmaker_userid, $request->message, $request->mydeals_userid, $chat_rooms->id);
+            $EmailUser = Front_user::where('id', $request->dealmaker_userid)->get()->first();
+            
+            // send email 
+            // $data = ['message' => 'You started a Tabdeal trade'];
+
+            // Mail::send('mail@tabdeal.online', $data, function($message,$EmailUser)
+            // {
+            //     $message->to($EmailUser->email, $EmailUser->vFirstName)
+            //             ->subject('Tabdeal Trade');
+            // });
+    		}
+            if($Deals){
+                return response()->json([ 
+                    'result'=> true,
+                    'message'=>'Added Successfully'
+                ]);
+            }else {
+                return response()->json([ 
+                    'result'=> false,
+                ]);
+            }
+        }
+        catch(Exception $ex)
+        {
+            return $ex->getMessage();
+        }  
+    }
+    // end endpoint add_trade_offer_point
 }
