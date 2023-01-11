@@ -265,4 +265,53 @@ class UserController extends Controller
             return $ex->getMessage();
         }
     }
+
+    public function reivew(Request $request)
+    {
+        try {
+            
+            $validator = Validator::make($request->all(), [
+                'userid_receiver' => 'required|integer',
+                'deal_id' => 'required|integer',
+                'item_id' => 'required|integer',
+                'userid_post' => 'required|integer',
+                'rating' => 'required|integer',
+                'review' => 'required|string',
+            ]);
+                
+            if ($validator->fails()) {
+                // Validation failed
+                return response()->json([
+                    'error' => $validator->errors(),
+                ], 422);
+            }
+            else{
+                $item = Frontuser_dealreview::create([
+                    'userid_receiver' => $request->userid_receiver,
+                    'deal_id' => $request->deal_id,
+                    'item_id' => $request->item_id,
+                    'userid_post' => $request->userid_post,
+                    'rating' => $request->rating,
+                    'review' => $request->review,
+                ]);
+                
+                if ($item) {
+                    return response()->json([
+                        'result'=>true,
+                        'message'=>'Added Successfully',
+                        
+                    ]);
+                  } else {
+                    return response()->json([
+                        'result'=>false,
+                        'message'=>'Added faild',
+                        
+                    ]);
+                  }
+                
+            }
+        } catch (Exception $ex) {
+           return $ex->getMessage();
+        }
+    }
 }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
+
 class ItemController extends Controller
 {
 
@@ -249,7 +250,7 @@ class ItemController extends Controller
             return $ex->getMessage();
         }
 
-
+    }
 
 
     /*
@@ -368,5 +369,46 @@ class ItemController extends Controller
     { //params: post_type,title,des,prefer,cat,subcat,country,city,user_id,images
         // inserting a demand using the data provided
 
+    }
+
+    public function add_like(Request $request)
+    {
+        try {
+            
+            $validator = Validator::make($request->all(), [
+                'item_id' => 'required|integer',
+                'frontuser_id' => 'required|integer',
+            ]);
+                
+            if ($validator->fails()) {
+                // Validation failed
+                return response()->json([
+                    'error' => $validator->errors(),
+                ], 422);
+            }
+            else{
+                $item = Item_favorite::create([
+                    'item_id' => $request->item_id,
+                    'frontuser_id' => $request->frontuser_id,
+                ]);
+                
+                if ($item) {
+                    return response()->json([
+                        'result'=>true,
+                        'message'=>'Added Successfully',
+                        
+                    ]);
+                  } else {
+                    return response()->json([
+                        'result'=>false,
+                        'message'=>'Added faild',
+                        
+                    ]);
+                  }
+                
+            }
+        } catch (Exception $ex) {
+           return $ex->getMessage();
+        }
     }
 }
