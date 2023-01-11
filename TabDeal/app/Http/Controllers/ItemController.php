@@ -7,11 +7,16 @@ use App\Models\Item;
 use App\Models\Item_favorite;
 use App\Models\Item_image;
 use App\Models\Item_report;
+use App\Models\User;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Mail;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Facades\Image;
 
 class ItemController extends Controller
 {
@@ -248,7 +253,7 @@ class ItemController extends Controller
         }
     }
 
-    }
+    // }
 
 
     /*
@@ -359,15 +364,11 @@ class ItemController extends Controller
     { //params: post_type,title,des,prefer,cat,subcat,country,city,user_id,images,post_id,item_status
         // updating an existing demand using the data provided
     }
-    public function post_offer(Request $request)
-    { //params: post_type,title,des,prefer,cat,subcat,tp,unit,country,city,user_id,images
-        // inserting  an offer using the data provided
-    }
-    public function post_demand(Request $request)
-    { //params: post_type,title,des,prefer,cat,subcat,country,city,user_id,images
-        // inserting a demand using the data provided
+    // public function post_demand(Request $request)
+    // { //params: post_type,title,des,prefer,cat,subcat,country,city,user_id,images
+    //     // inserting a demand using the data provided
 
-    }
+    // }
 
     public function add_like(Request $request)
     {
@@ -409,4 +410,202 @@ class ItemController extends Controller
            return $ex->getMessage();
         }
     }
+
+
+    // start endpoint post_offer
+    public function post_offer(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                'itemtype' => 'required|string',
+                'frontuser_id' => 'required|integer',
+                'title' => 'required|string',
+                'description' => 'required|string',
+                'itemsectioncategoryid' => 'required|integer',
+                'itemsectionsubcategoryid' => 'required|integer',
+                'offerdemandswap' => 'required|string',
+                'mbu' => 'required|integer',
+                'unit' => 'required|string',
+                'country_id' => 'required|integer',
+                'city_id' => 'required|integer',
+                'image' => 'string',
+                'preferred_item' => 'nullable|string',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }else{
+            $Items=Item::create([
+                'itemtype'=>$request->itemtype,
+                'frontuser_id'=>$request->frontuser_id,
+                'title'=>$request->title,
+                'description'=>$request->description,
+                'itemsectioncategoryid'=>$request->itemsectioncategoryid,
+                'itemsectionsubcategoryid'=>$request->itemsectionsubcategoryid,
+                'offerdemandswap'=>$request->offerdemandswap,
+                'mbu'=>$request->mbu,
+                'unit'=>$request->unit,
+                'country_id'=>$request->country_id,
+                'city_id'=>$request->city_id,
+                'preferred_item'=>$request->preferred_item,
+                'quantity'=>1,
+                'totalview'=>0
+            ]);
+            $lastItem = Item::latest()->first();
+            $lastId = $lastItem->id;
+            if($request->image) {
+    			$images = json_decode($request->image, true);
+                foreach ($images as $image){
+                    $imagePath= 'images/'.$image;
+                    $imagenew = Image::make($imagePath);
+                    $ResizeImage= $imagenew->resize(720, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $ResizeImage->save('images/items_864_636.png');
+                    $itemImage = new Item_image();
+                    $itemImage->item_id = $lastId;
+                    $itemImage->name = $image;
+                    $itemImage->save();
+                }
+    		}
+    		}
+            $permissionid=Permission::where('product_status',1)->get('id');
+            $idarray=array();
+            foreach ($permissionid as $id){
+                array_push($idarray,$id->id );
+            }
+            $useremail=User::whereIn('permissions_id',$idarray)->where('status',1)->get('email');
+            $emailarray=array();
+            foreach ($useremail as $email){
+                array_push($emailarray,$email->email );
+            }
+            $data = ['message' => 'Product added need to be reviewed.'];
+            // Mail::send('mail@tabdeal.online', $data, function($message)
+            // {
+            //     $permissionid=Permission::where('product_status',1)->get('id');
+            //     $idarray=array();
+            //     foreach ($permissionid as $id){
+            //         array_push($idarray,$id->id );
+            //     }
+            //     $useremail=User::whereIn('permissions_id',$idarray)->where('status',1)->get('email');
+            //     foreach ($useremail as $email){
+            //     $message->to($email->email , '')
+            //             ->subject('Tabdeal Product added');
+            //         }
+            //     });
+            if($Items){
+                return response()->json([ 
+                    'result'=> true,
+                    'sent'=> true,
+                    'message'=>'Added Successfully'
+                ]);
+            }else {
+                return response()->json([ 
+                    'result'=> false,
+                ]);
+            }
+        }
+        catch(Exception $ex)
+                {
+                    return $ex->getMessage();
+                }  
+    }
+    // end endpoint post_offer
+
+     // start endpoint post_demand
+     public function post_demand(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                'itemtype' => 'required|string',
+                'frontuser_id' => 'required|integer',
+                'title' => 'required|string',
+                'description' => 'required|string',
+                'itemsectioncategoryid' => 'required|integer',
+                'itemsectionsubcategoryid' => 'required|integer',
+                'country_id' => 'required|integer',
+                'city_id' => 'required|integer',
+                'image' => 'string',
+                'preferred_item' => 'nullable|string',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }else{
+            $Items=Item::create([
+                'itemtype'=>$request->itemtype,
+                'frontuser_id'=>$request->frontuser_id,
+                'title'=>$request->title,
+                'description'=>$request->description,
+                'itemsectioncategoryid'=>$request->itemsectioncategoryid,
+                'itemsectionsubcategoryid'=>$request->itemsectionsubcategoryid,
+                'country_id'=>$request->country_id,
+                'city_id'=>$request->city_id,
+                'preferred_item'=>$request->preferred_item,
+                'quantity'=>1,
+                'totalview'=>0
+            ]);
+            $lastItem = Item::latest()->first();
+            $lastId = $lastItem->id;
+            if($request->image) {
+    			$images = json_decode($request->image, true);
+                foreach ($images as $image){
+                    $imagePath= 'images/'.$image;
+                    $imagenew = Image::make($imagePath);
+                    $ResizeImage= $imagenew->resize(720, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $ResizeImage->save('images/items_864_636.png');
+                    $itemImage = new Item_image();
+                    $itemImage->item_id = $lastId;
+                    $itemImage->name = $image;
+                    $itemImage->save();
+                }
+    		}
+    		}
+            $permissionid=Permission::where('product_status',1)->get('id');
+            $idarray=array();
+            foreach ($permissionid as $id){
+                array_push($idarray,$id->id );
+            }
+            $useremail=User::whereIn('permissions_id',$idarray)->where('status',1)->get('email');
+            $emailarray=array();
+            foreach ($useremail as $email){
+                array_push($emailarray,$email->email );
+            }
+            $data = ['message' => 'Product added need to be reviewed.'];
+            // Mail::send('mail@tabdeal.online', $data, function($message)
+            // {
+            //     $permissionid=Permission::where('product_status',1)->get('id');
+            //     $idarray=array();
+            //     foreach ($permissionid as $id){
+            //         array_push($idarray,$id->id );
+            //     }
+            //     $useremail=User::whereIn('permissions_id',$idarray)->where('status',1)->get('email');
+            //     foreach ($useremail as $email){
+            //     $message->to($email->email , '')
+            //             ->subject('Tabdeal Product added');
+            //         }
+            //     });
+            if($Items){
+                return response()->json([ 
+                    'result'=> true,
+                    'sent'=> true,
+                    'message'=>'Added Successfully'
+                ]);
+            }else {
+                return response()->json([ 
+                    'result'=> false,
+                ]);
+            }
+        }
+        catch(Exception $ex)
+                {
+                    return $ex->getMessage();
+                }  
+    }
+    // end endpoint post_demand
+
 }

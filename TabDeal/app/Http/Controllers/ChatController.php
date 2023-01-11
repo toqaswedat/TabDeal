@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Chatarchive;
+use App\Models\Chatreport;
 use App\Models\Chatroom;
 use App\Models\City;
 use App\Models\Countrie;
@@ -11,6 +13,7 @@ use App\Models\Front_user;
 use App\Models\Item;
 use App\Models\Item_image;
 use App\Models\Message;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -145,4 +148,46 @@ class ChatController extends Controller
                   return $ex->getMessage();
               }  
     }
+
+    // start endpoint report_user
+    public function report_user(Request $request){
+        try{
+            $validator = Validator::make($request->all(), [
+                'message' => 'required|string',
+                'userid_report' => 'required|integer',
+                'userid_receivereport' => 'required|integer',
+                'chatroom_id' => 'required|integer',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'result' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }else{
+            $chatreport=Chatreport::create([
+                'message'=>$request->message,
+                'userid_receivereport'=>$request->userid_receivereport,
+                'userid_report'=>$request->userid_report,
+                'chatroom_id'=>$request->chatroom_id,
+            ]);
+            if($chatreport){
+                return response()->json([ 
+                    'result'=> true,
+                    'message'=>'Added Successfully'
+                ]);
+            }else {
+                return response()->json([ 
+                    'result'=> false,
+                ]);
+            }
+        }
+        }
+        catch(Exception $ex)
+              {
+                  return $ex->getMessage();
+              }  
+    }
+    // end endpoint report_user
+
+
 }
