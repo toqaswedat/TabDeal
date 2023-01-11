@@ -138,7 +138,8 @@ class ItemController extends Controller
     }
 
 
-    public function updatePostOffer(Request $request){
+    public function updatePostOffer(Request $request)
+    {
         try {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|int',
@@ -162,7 +163,7 @@ class ItemController extends Controller
                 ], 422);
             }
 
-            $PostOffer = Item::where('id', $request->id)->where('offerdemandswap','OFFERED')->update([
+            $PostOffer = Item::where('id', $request->id)->where('offerdemandswap', 'OFFERED')->update([
                 'itemtype' => $request->itemtype,
                 'title' => $request->title,
                 'description' => $request->description,
@@ -174,7 +175,7 @@ class ItemController extends Controller
                 'city_id' => $request->city_id,
                 'preferred_item' => $request->preferred_item,
                 'item_status' => $request->item_status
-        ]);
+            ]);
             // THIS ENDPOINT STILL NEED IMG UPDATE
 
             if ($PostOffer) {
@@ -187,15 +188,13 @@ class ItemController extends Controller
                     'result' => false
                 ]);
             }
-
-        
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
-
     }
 
-    public function updateDemandOffer(Request $request){
+    public function updateDemandOffer(Request $request)
+    {
         try {
             $validator = Validator::make($request->all(), [
                 'id' => 'required|int',
@@ -215,40 +214,39 @@ class ItemController extends Controller
                     'result' => false,
                     'errors' => $validator->errors()
                 ], 422);
-            }
-
-            $demandOffer = Item::where('id', $request->id)->where('offerdemandswap','DEMAND')->update([
-                'itemtype' => $request->itemtype,
-                'title' => $request->title,
-                'description' => $request->description,
-                'itemsectioncategoryid' => $request->itemsectioncategoryid,
-                'itemsectionsubcategoryid' => $request->itemsectionsubcategoryid,
-                'country_id' => $request->country_id,
-                'city_id' => $request->city_id,
-                'preferred_item' => $request->preferred_item,
-                'item_status' => $request->item_status
-        ]);
-           // THIS ENDPOINT STILL NEED IMG UPDATE
-
-
-
-
-
-            if ($demandOffer) {
-                return response()->json([
-                    'result' => true,
-                    'message' => 'Updated Successfully'
-                ]);
             } else {
-                return response()->json([
-                    'result' => false
+                $demandOffer = Item::where('id', $request->id)->where('offerdemandswap', 'DEMAND')->update([
+                    'itemtype' => $request->itemtype,
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'itemsectioncategoryid' => $request->itemsectioncategoryid,
+                    'itemsectionsubcategoryid' => $request->itemsectionsubcategoryid,
+                    'country_id' => $request->country_id,
+                    'city_id' => $request->city_id,
+                    'preferred_item' => $request->preferred_item,
+                    'item_status' => $request->item_status
                 ]);
-            }
+                // THIS ENDPOINT STILL NEED IMG UPDATE
 
-        
+
+
+
+
+                if ($demandOffer) {
+                    return response()->json([
+                        'result' => true,
+                        'message' => 'Updated Successfully'
+                    ]);
+                } else {
+                    return response()->json([
+                        'result' => false
+                    ]);
+                }
+            }
         } catch (Exception $ex) {
             return $ex->getMessage();
         }
+    }
 
     }
 
@@ -272,41 +270,41 @@ class ItemController extends Controller
     public function get_offers(Request $request)
     { //params: last_id,search,frontuser_id
         // get all offers based on data provided
-      
-        if($request->user_id){ //returns offers of a queried User
 
-    $offers = Item::where('offerdemandswap', 'OFFERED')
-            ->where('item_status', 'Available')
-            ->where('frontuser_id', $request->user_id)
-            ->where('status', 'ACTIVE')
-            ->get();  //List of offers that are: Offered, Active, available and belong to the current queried user
-        return response()->json([
-            'result' => true,
-            'offers' => $offers]); //JSON array name
+        if ($request->user_id) { //returns offers of a queried User
+
+            $offers = Item::where('offerdemandswap', 'OFFERED')
+                ->where('item_status', 'Available')
+                ->where('frontuser_id', $request->user_id)
+                ->where('status', 'ACTIVE')
+                ->get();  //List of offers that are: Offered, Active, available and belong to the current queried user
+            return response()->json([
+                'result' => true,
+                'offers' => $offers
+            ]); //JSON array name
+
+        } else {
+
+            $offers = Item::where('offerdemandswap', 'OFFERED')
+                ->where('item_status', 'Available')
+                ->where('status', 'ACTIVE')
+                ->get();  //Lists ALL offers that are: Offered, Active and available
+            return response()->json([
+                'result' => true,
+                'offers' => $offers //JSON array name
+            ]);
+        }
+        if ($request->search) { //returns search results when there's a search key (still not sure which fields should i return yet)
+
+            // $searchKey = $request->search;
+            // Item::Where('', 'like', '%' . $searchKey . '%')
+            //         ->orWhere('', 'like', '%' . $searchKey . '%')
+            //         ->orWhere('', 'like', '%' . $searchKey . '%')
+            //         ->orWhere('', 'like', '%' . $searchKey . '%')->get();
+
 
         }
-        else{
-
-        $offers = Item::where('offerdemandswap', 'OFFERED')
-            ->where('item_status', 'Available')
-            ->where('status', 'ACTIVE')
-            ->get();  //Lists ALL offers that are: Offered, Active and available
-        return response()->json([
-            'result' => true,
-            'offers' => $offers //JSON array name
-        ]);
     }
-    if($request->search){ //returns search results when there's a search key (still not sure which fields should i return yet)
-
-        // $searchKey = $request->search;
-        // Item::Where('', 'like', '%' . $searchKey . '%')
-        //         ->orWhere('', 'like', '%' . $searchKey . '%')
-        //         ->orWhere('', 'like', '%' . $searchKey . '%')
-        //         ->orWhere('', 'like', '%' . $searchKey . '%')->get();
-
-
-    }
-}
     public function get_cat_offers(Request $request)
     { //params: cat,sub_cat,last_id
         // get offers from a certain category / subcategory
@@ -320,34 +318,34 @@ class ItemController extends Controller
         //get demands based on provider variables
 
 
-        if($request->user_id){ //returns DEMAND of a queried User
+        if ($request->user_id) { //returns DEMAND of a queried User
 
             $demands = Item::where('offerdemandswap', 'DEMAND')
-                    ->where('item_status', 'Available')
-                    ->where('frontuser_id', $request->user_id)
-                    ->where('status', 'ACTIVE')
-                    ->get();  //List of DEMANDs that are: DEMAND, Active, available and belong to the current queried user
-                return response()->json([
-                    'result' => true,
-                    'demands' => $demands]); //JSON array name
-        
-                }
-                else{
-        
-                $demands = Item::where('offerdemandswap', 'DEMAND')
-                    ->where('item_status', 'Available')
-                    ->where('status', 'ACTIVE')
-                    ->get();  //Lists ALL demands that are: DEMAND, Active and available
-                return response()->json([
-                    'result' => true,
-                    'demands' => $demands //JSON array name
-                ]);
-            }
+                ->where('item_status', 'Available')
+                ->where('frontuser_id', $request->user_id)
+                ->where('status', 'ACTIVE')
+                ->get();  //List of DEMANDs that are: DEMAND, Active, available and belong to the current queried user
+            return response()->json([
+                'result' => true,
+                'demands' => $demands
+            ]); //JSON array name
+
+        } else {
+
+            $demands = Item::where('offerdemandswap', 'DEMAND')
+                ->where('item_status', 'Available')
+                ->where('status', 'ACTIVE')
+                ->get();  //Lists ALL demands that are: DEMAND, Active and available
+            return response()->json([
+                'result' => true,
+                'demands' => $demands //JSON array name
+            ]);
+        }
     }
     public function get_cat_demand(Request $request)
     { //params: cat,sub_cat,last_id
         // get demands from a certain category
-         //category table is empty (where are the categories stored?)
+        //category table is empty (where are the categories stored?)
     }
     public function search(Request $request)
     { //params: itype,search

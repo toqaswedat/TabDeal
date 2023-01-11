@@ -9,12 +9,47 @@ use App\Models\Item;
 use App\Models\Item_favorite;
 use App\Models\Item_image;
 use App\Models\Item_report;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Http\Request;
 
 class Item_reportController extends Controller
 {
     //
+    public function addReport(Request $request)
+   {
+      try {
+         $validator = Validator::make($request->all(), [
+            'item_id' => 'required|int',
+            'userid_reported' => 'required|int',
+            'message' => 'nullable|string'
+         ]);
+         if ($validator->fails()) {
+            return response()->json([
+               'result' => false,
+               'errors' => $validator->errors()
+            ], 422);
+         } else {
+            $add = Item_report::create([
+               'item_id' => $request->item_id,
+               'userid_reported' => $request->userid_reported,
+               'message' => $request->message
+            ]);
+            if ($add) {
+               return response()->json([
+                  'message' => 'Added successfully'
+               ]);
+            } else {
+               return response()->json([
+                  'result' => false,
+               ]);
+            }
+         }
+      } catch (Exception $ex) {
+         return $ex->getMessage();
+      }
+   }
+
     public function report(Request $request)
     {
         try {

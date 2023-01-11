@@ -31,6 +31,8 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+// to be moved
+Route::post('/add_report', [Item_reportController::class, 'addReport']);
 
 Route::controller(BusinessController::class)->group(function(){
     Route::get('/business_user', 'getAllBusinesses');
@@ -71,7 +73,7 @@ Route::controller(ItemController::class)->group(function () {
     Route::put('/update_post_offer', 'updatePostOffer');
     Route::put('/update_demand_offer', 'updateDemandOffer');
 });
-});
+
 
 /*
 * The route below is only for testing registration proccess and will be removed once the solution is accepted
