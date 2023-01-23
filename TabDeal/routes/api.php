@@ -65,6 +65,7 @@ Route::controller(UserController::class)->group(function () {
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'loginUser');
     Route::post('/register','registerUser');
+    Route::post('/UserRegister','userRegister'); //This endpoint was added by JihadGhassan 
 });
 
 Route::controller(AddDataController::class)->group(function () {
