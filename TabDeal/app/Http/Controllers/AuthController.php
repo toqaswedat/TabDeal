@@ -17,12 +17,13 @@ class AuthController extends Controller
 // This Function will add a user to laravel's users table 
 public function userRegister(Request $request)
 {
-    /*
+    try{
+ /*
     * Add a new user to both USERS and FRONT_USERS tables as discussed with Yahya And Tuqa
     * First we add the data to the USERS table and then we add the data to Front_user Model
     *
    */
-   if(!$request->email){
+  if(!$request->email){
     return 'Email is required';
    }
    else if(!$request->phone){
@@ -109,12 +110,22 @@ public function userRegister(Request $request)
          
             // the section below checks if newUser is a business and then inserts it to the businesses table:
             if ($newUser) { //check if acc_type is a business
-
-                return 'Account registered successfully';
+                return response()->json([
+                    
+                   
+                    'message' => 'Account registered successfully',
+                 
+                ]);
+                
 
             }
             else {  //if user isn't registered successfully
-                return 'Account was not registered successfully';
+                return response()->json([
+                  
+                    'message' => 'Account was not registered successfully',
+                
+                ]);
+              
             } //endif
         }// end successful registration handller
 
@@ -123,8 +134,18 @@ public function userRegister(Request $request)
     }
     else
     { //If users with same phone /email exist
-        return  'Email / Phone already used.';
+        return response()->json([
+                 
+            'message' => 'Email / Phone already used.',
+          
+        ]);
+       
        } //end if (ch== 0) && ($uch == 0)
+    }
+    catch (Exception $ex) {
+        return $ex->getMessage();
+    }
+   
 } //end function registerUser
 
 
